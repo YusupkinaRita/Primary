@@ -2,6 +2,7 @@
 #include<iostream>
 #include "BitField.h"
 #include <vector>
+#include <cstdint>
 
 class Set{
 private:
@@ -46,8 +47,9 @@ public:
     Set operator~();
     std::vector<uint64_t> GetPrimary(){
         std::vector<uint64_t> prim_num;
+        BitField tmp=_bitField;
         uint64_t current_div=2;
-        while(current_div<_maxPower-1){
+        while(current_div<_maxPower){
             if (IsMember(current_div)){
                 for(uint64_t i=current_div+current_div; i<_maxPower;i+=current_div){
                     _bitField.ClrBit(i);
@@ -58,6 +60,7 @@ public:
             current_div++;
                 
         }
+        _bitField=tmp;
         return prim_num;
     }
 
@@ -82,7 +85,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Set& set){
         for(uint64_t i=0;i<set._maxPower;i++){
             if(set.IsMember(i)==true)
-            os<<i;
+            os<<i<<" ";
 
         }
         std::cout<<"\n";
