@@ -11,15 +11,13 @@ private:
 public:
     Set(size_t size):_bitField(size){
         _maxPower=size;
-        _bitField=BitField(_maxPower);
+    
     }
     Set(const Set& set):_bitField(set._maxPower){
         _maxPower=set._maxPower;
-        _bitField=set._bitField;
     }
     Set(const BitField& bf):_bitField(bf.GetLength()){
         _maxPower=bf.GetLength();
-        _bitField=bf;
     }
     operator BitField(){
         return _bitField;
