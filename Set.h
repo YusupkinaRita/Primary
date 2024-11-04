@@ -14,21 +14,21 @@ public:
         _maxPower=size;
     
     }
-    Set(const Set& set):_bitField(set._maxPower){
+    Set(const Set& set):_bitField(set._bitField){
         _maxPower=set._maxPower;
     }
-    Set(const BitField& bf):_bitField(bf.GetLength()){
+    Set(const BitField& bf):_bitField(bf){
         _maxPower=bf.GetLength();
     }
     operator BitField(){
         return _bitField;
     }
 
-    size_t GetMaxPower(){
+    size_t GetMaxPower()const{
         return _maxPower;
     }
 
-    void InsertElem(uint64_t elem){
+    void InsElem(uint64_t elem){
         _bitField.SetBit(elem);
 
     }
@@ -37,14 +37,43 @@ public:
     }
     bool IsMember(uint64_t elem)const{
         return(_bitField.GetBit(elem));
-        
     }
-    Set& operator=(const Set& tmp);
+    Set& operator=(const Set& s){
+        _maxPower=s.GetMaxPower();
+        _bitField=s._bitField;
+    return *this;
+    }
     Set operator+(uint64_t elem);
-    Set operator+(const Set& tmp);//обединение
-    Set operator*(const Set& tmp);//пересечение
+    Set operator+(const Set& s){//обединение
+        Set b=Set(s);
+        if(_maxPower>s.GetMaxPower()){
+            b=Set(*this);
+            b._bitField=b._bitField|s._bitField;  
+        }
+        else 
+            b._bitField=b._bitField|_bitField;
+
+        return b;
+
+    }
+    Set operator*(const Set& s){
+        Set b=Set(s);
+        if(_maxPower<s.GetMaxPower()){
+            b=Set(*this);
+            b._bitField=b._bitField&s._bitField;
+        }
+        else
+            b._bitField=b._bitField&_bitField;
+    
+        return b;
+        }//пересечение
     Set operator-(uint64_t elem);
-    Set operator~();
+    Set operator~(){
+        Set b=Set(*this);
+        b._bitField=~b._bitField;
+
+     return b;
+    }
     std::vector<uint64_t> GetPrimary(){
         std::vector<uint64_t> prim_num;
         BitField tmp=_bitField;
@@ -66,7 +95,7 @@ public:
 
     void fill_set(){
         for(size_t i=0;i<_maxPower;i++){
-            InsertElem(i);
+            InsElem(i);
         }
     }
 
@@ -78,7 +107,7 @@ public:
             istr>>current;
             if(current<0)
             break;
-            set.InsertElem(current);
+            set.InsElem(current);
         }
         return istr;
     }

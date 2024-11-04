@@ -65,6 +65,8 @@ BitField BitField::operator|(const BitField& tmp){
 
 BitField BitField::operator&(const BitField& tmp){
     BitField b=BitField(*this);
+    if (tmp._sizeBit<b._sizeBit)
+        b=BitField(tmp);
     for(size_t i=0; i<_memSize;i++ ){
         b._mem[i]&=tmp._mem[i];
     }
